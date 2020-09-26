@@ -1,0 +1,66 @@
+service: net-radio-dl
+
+frameworkVersion: '2'
+
+plugins:
+  - serverless-python-requirements
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, self:custom.default.stage}
+  region: ap-northeast-1
+  profile: ${opt:profile, self:custom.default.profile}
+  deploymentBucket:
+    name: ${self:custom.default.deploymentBucket}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - s3:ListBucket
+        - s3:GetObject
+        - s3:HeadObject
+        - s3:PutObject
+      Resource: 
+        - "arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}"
+        - "arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*"
+  environment:
+    S3_BUCKET_NAME: ${env:NET_RADIO_S3_Bucket}
+    ONSEN_URL: ${env:ONSEN_URL}
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+    zip: true
+    slim: true
+    slimPatterns:
+      - "**/*.egg-info*"
+      - "**/setuptools"
+      - "**/wheel"
+      - "**/pkg_resources"
+  default:
+    stage: "dev"
+    profile: "my"
+    deploymentBucket: ${env:MY_SERVERLESS_DEPLOYMENT}
+
+package:
+  individually: false
+  include:
+    - "./bin/**"
+  exclude:
+    - "./layers/**"
+    - "./tmp/**"
+    - ".vscode/**"
+    - "node_modules/**"
+    - "package.json"
+    - "package-lock.json"
+    - "requirements.txt"
+    - "*.zip"
+
+functions:
+  onsen:
+    handler: src.onsen.main
+    memorySize: 2048
+    timeout: 900
+    events:
+      - schedule: 
+          rate: cron(0 0 19 * ? *)
