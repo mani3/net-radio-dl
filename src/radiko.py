@@ -25,12 +25,14 @@ os.environ['PATH'] = os.environ['PATH'] + ':/var/task/bin'
 
 SITE_NAME = 'radiko'
 RADIKO_CONFIG = [
-  {'station_id': 'QRR', 'wd': 5, 'ft': '020000', 'to': '023000', 'name': 'tenshinotamago'},
+  {'station_id': 'QRR', 'wd': 5, 'ft': '010000', 'to': '013000', 'name': 'tenshinotamago'},
   {'station_id': 'QRR', 'wd': 6, 'ft': '000000', 'to': '003000', 'name': 'kawaikaro'},
   {'station_id': 'QRR', 'wd': 0, 'ft': '210000', 'to': '213000', 'name': 'toretore'},
   {'station_id': 'QRR', 'wd': 6, 'ft': '233000', 'to': '240000', 'name': 'smilegang'},
   {'station_id': 'TBS', 'wd': 0, 'ft': '000000', 'to': '003000', 'name': 'tokyoboogienight'},
   {'station_id': 'FMT', 'wd': 0, 'ft': '210000', 'to': '213000', 'name': 'mnosekai'},
+  {'station_id': 'QRR', 'wd': 6, 'ft': '220000', 'to': '223000', 'name': 'melodyflag'},
+  {'station_id': 'QRR', 'wd': 3, 'ft': '213000', 'to': '220000', 'name': 'otomegokoro'},
 ]
 
 
@@ -137,6 +139,7 @@ def main(event, context):
       name = param['name']
       now = datetime.datetime.now()
       days = (now.weekday() - param['wd']) % 7
+      days = 7 if days == 0 else days
       date = now - datetime.timedelta(days=days)
 
       id = param['station_id']
