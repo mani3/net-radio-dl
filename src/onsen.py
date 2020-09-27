@@ -100,8 +100,12 @@ def main(event, context):
         id = content_dict.get('id', 0)
         streaming_url = content_dict.get('streaming_url', None)
         is_movie = content_dict.get('movie', False)
-        ext = 'mp4' if is_movie else 'mp3'
+        ext = 'mp4' if is_movie else 'm4a'
         filename = f'{id}.{ext}'
+
+        if streaming_url is None:
+          logger.info('streaming_url is nll', extra={'stats': content_dict})
+          continue
 
         key = os.path.join('contents', SITE_NAME, program_name, filename)
         output_path = os.path.join(os.sep, 'tmp', filename)
