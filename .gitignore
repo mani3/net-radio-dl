@@ -21,7 +21,7 @@ var/
 tmp
 memo.md
 layers
-bin/ffmpeg
+bin/
 *.zip
 .vscode/
 node_modules

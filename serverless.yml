@@ -21,11 +21,15 @@ provider:
         - s3:HeadObject
         - s3:PutObject
       Resource: 
-        - "arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}"
-        - "arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*"
+        - "arn:aws:s3:::${self:provider.environment.NET_RADIO_S3_BUCKET}"
+        - "arn:aws:s3:::${self:provider.environment.NET_RADIO_S3_BUCKET}/*"
   environment:
-    S3_BUCKET_NAME: ${env:NET_RADIO_S3_Bucket}
+    NET_RADIO_S3_BUCKET: ${env:NET_RADIO_S3_BUCKET}
     ONSEN_URL: ${env:ONSEN_URL}
+    RADIKO_AUTH1_URL: ${env:RADIKO_AUTH1_URL}
+    RADIKO_AUTH2_URL: ${env:RADIKO_AUTH2_URL}
+    RADIKO_STREAM_URL: ${env:RADIKO_STREAM_URL}
+    RADIKO_SWF_URL: ${env:RADIKO_SWF_URL}
 
 custom:
   pythonRequirements:
@@ -64,3 +68,10 @@ functions:
     events:
       - schedule: 
           rate: cron(0 0 19 * ? *)
+  radiko:
+    handler: src.radiko.main
+    memorySize: 2048
+    timeout: 900
+    events:
+      - schedule:
+          rate: cron(0 0 12 * ? *)
