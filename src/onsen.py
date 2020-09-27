@@ -113,6 +113,8 @@ def main(event, context):
         if not is_exist(bucket_name, key):
           radio.download(streaming_url, output_path)
           upload_media(output_path, s3, bucket_name, key)
+        else:
+          logger.info(f'File exist: {key}')
     except Exception as e:
       logger.error(str(e))
 
