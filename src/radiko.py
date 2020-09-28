@@ -33,6 +33,8 @@ RADIKO_CONFIG = [
   {'station_id': 'FMT', 'wd': 0, 'ft': '210000', 'to': '213000', 'name': 'mnosekai'},
   {'station_id': 'QRR', 'wd': 6, 'ft': '220000', 'to': '223000', 'name': 'melodyflag'},
   {'station_id': 'QRR', 'wd': 3, 'ft': '213000', 'to': '220000', 'name': 'otomegokoro'},
+  {'station_id': 'QRR', 'wd': 5, 'ft': '023000', 'to': '030000', 'name': 'anisondaysplus'},
+  {'station_id': 'QRR', 'wd': 0, 'ft': '003000', 'to': '010000', 'name': 'yuiroom'},
 ]
 
 
@@ -76,13 +78,13 @@ class Radiko(object):
         line = line.rstrip()
         if line.find('=') != -1:
           key, value = line.split('=')
-          res[key] = value
+          res[key.lower()] = value
 
     logger.info(f'auth1: {str(res)}')
 
-    authToken  = res['X-RADIKO-AUTHTOKEN']
-    keyOffset = int(res['X-Radiko-KeyOffset'])
-    keyLength = int(res['X-Radiko-KeyLength'])
+    authToken  = res['X-Radiko-AuthToken'.lower()]
+    keyOffset = int(res['X-Radiko-KeyOffset'.lower()])
+    keyLength = int(res['X-Radiko-KeyLength'.lower()])
     with open(self.AUTH_KEY_PATH, 'rb') as f:
       f.seek(keyOffset)
       partialKey = base64.b64encode(f.read(keyLength))

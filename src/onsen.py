@@ -31,13 +31,13 @@ SITE_NAME = 'onsen'
 ONSEN_URL = os.environ.get('ONSEN_URL', '')
 
 ONSEN_CONFIG = {
-  0: ['miabyss', 'tate'],
+  0: ['miabyss', 'tate', 'hamehura'],
   1: ['teibo'],
-  2: ['matsui'],
+  2: ['matsui', 'hxeros'],
   3: ['ippo', 'yurucamp'],
   4: ['bullet', 'railgun_t', 'koihime'],
-  5: ['yujincho', 'gochiusabloom', 'dolls'],
-  6: ['survey', 'watahana', 'hxeros', 'fujita', 'matsui'],
+  5: ['yujincho', 'gochiusabloom', 'dolls', 'kamisama-day'],
+  6: ['survey', 'watahana', 'fujita', 'matsui'],
 }
 
 
@@ -111,6 +111,7 @@ def main(event, context):
         output_path = os.path.join(os.sep, 'tmp', filename)
 
         if not is_exist(bucket_name, key):
+          logger.info('Download start', extra={'stats': {'content': content_dict}})
           radio.download(streaming_url, output_path)
           upload_media(output_path, s3, bucket_name, key)
         else:
