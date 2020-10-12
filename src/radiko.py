@@ -40,6 +40,7 @@ RADIKO_CONFIG = [
   {'station_id': 'QRR', 'wd': 6, 'ft': '223000', 'to': '230000', 'name': 'funs_project_lab'},
   {'station_id': 'QRR', 'wd': 6, 'ft': '230000', 'to': '233000', 'name': 'tenipuri'},
   {'station_id': 'QRR', 'wd': 0, 'ft': '000000', 'to': '003000', 'name': 'dragalia_lost'},
+  {'station_id': 'FMT', 'wd': 4, 'ft': '230000', 'to': '232700', 'name': 'lisa_locks'},
 ]
 
 
