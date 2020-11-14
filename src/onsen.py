@@ -32,8 +32,8 @@ ONSEN_URL = os.environ.get('ONSEN_URL', '')
 
 ONSEN_CONFIG = {
   0: ['miabyss', 'tate', 'hamehura'],
-  1: ['teibo', 'tonikawa'],
-  2: ['matsui', 'hxeros'],
+  1: ['teibo', 'tonikawa', 'kimetsu', 'higurashi'],
+  2: ['matsui', 'hxeros', 'lasdan'],
   3: ['ippo', 'yurucamp', 'uzakichan', 'majotabi', 'ff'],
   4: ['bullet', 'railgun_t', 'koihime'],
   5: ['yujincho', 'gochiusabloom', 'dolls', 'kamisama-day'],
