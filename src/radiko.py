@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import re
 import base64
 import subprocess
 import datetime
@@ -45,67 +46,61 @@ RADIKO_CONFIG = [
 ]
 
 
-def download_authkey():
-  url = os.environ.get('RADIKO_SWF_URL', '')
-  filepath = os.path.join(os.sep, 'tmp', 'player-release.swf')
-  authkey_path = os.path.join(os.sep, 'tmp', 'authkey.png')
-
-  with open(filepath, "wb") as f:
-    res = requests.get(url)
-    f.write(res.content)
-  # subprocess.Popen(['swfextract', filepath, '-b', '12', '-o', authkey_path], stdout=subprocess.PIPE)
-  subprocess.call(['swfextract', filepath, '-b', '12', '-o', authkey_path])
-
-# Download authkey.png
-download_authkey()
-
-
 class Radiko(object):
   AUTH_KEY_PATH = os.path.join(os.sep, 'tmp', 'authkey.png')
+  RADIKO_PLAYER_URL = os.environ.get('RADIKO_PLAYER_URL', '')
   AUTH1_URL = os.environ.get('RADIKO_AUTH1_URL', '')
   AUTH2_URL = os.environ.get('RADIKO_AUTH2_URL', '')
   STREAM_URL = os.environ.get('RADIKO_STREAM_URL', '')
 
   def __init__(self):
+    self.auth_key = self.get_auth_key()
     authToken, partialKey = self.auth1()
     self.authToken = authToken
     res = self.auth2(authToken, partialKey)
     logger.info('End radiko auth', extra={'stats': {'auth2_res': res}})
 
+  def get_auth_key(self):
+    req = urllib.request.Request(self.RADIKO_PLAYER_URL)
+    with urllib.request.urlopen(req) as body:
+      text = body.read().decode('utf-8')
+    pattern = r".*new RadikoJSPlayer\(.*'pc_html5',\s'(\w+)'.*"
+    auth_key = re.match(pattern, text, re.S).group(1)
+    logger.info(f'auth_key: {auth_key}', extra={'stats': {'auth_key': auth_key}})
+    return auth_key
+
   def auth1(self):
     url = self.AUTH1_URL
-    data = '\r\n'
     headers = self.auth1_headers()
-    req = urllib.request.Request(url, data.encode(), headers)
+    req = urllib.request.Request(url, None, headers)
 
     res = {}
     with urllib.request.urlopen(req) as body:
       text = body.read().decode('utf-8')
-      for line in text.split('\n'):
-        line = line.rstrip()
-        if line.find('=') != -1:
-          key, value = line.split('=')
-          res[key.lower()] = value
+      for key, value in body.headers.items():
+        res[key.lower()] = value
 
-    logger.info(f'auth1: {str(res)}')
+    logger.info(f'auth1: {str(res)}', extra={'stats': {'text': text, 'auth1': res}})
 
     authToken  = res['X-Radiko-AuthToken'.lower()]
     keyOffset = int(res['X-Radiko-KeyOffset'.lower()])
     keyLength = int(res['X-Radiko-KeyLength'.lower()])
-    with open(self.AUTH_KEY_PATH, 'rb') as f:
-      f.seek(keyOffset)
-      partialKey = base64.b64encode(f.read(keyLength))
+
+    byte = self.auth_key[keyOffset:keyOffset + keyLength]
+    partialKey = base64.b64encode(byte.encode())
     return authToken, partialKey
 
   def auth2(self, authToken, partialKey):
     url = self.AUTH2_URL
-    data = '\r\n'
     headers = self.auth2_headers(authToken, partialKey)
-    req = urllib.request.Request(url, data.encode(), headers)
+    req = urllib.request.Request(url, None, headers)
 
+    res = {}
     with urllib.request.urlopen(req) as body:
       text = body.read().decode('utf-8').rstrip()
-    logger.info(f'auth2: {text}')
+      for key, value in body.headers.items():
+        res[key.lower()] = value
+    logger.info(f'auth2: {text}', extra={'stats': {'headers': res}})
     return text
 
   def stream_url(self, station_id, ft, to):
@@ -120,18 +115,18 @@ class Radiko(object):
 
   def auth1_headers(self):
     headers = {
-      'X-Radiko-App': 'pc_ts',
-      'X-Radiko-App-Version': '4.0.0',
-      'X-Radiko-User': 'test-stream',
+      'X-Radiko-App': 'pc_html5',
+      'X-Radiko-App-Version': '0.0.1',
+      'X-Radiko-User': 'dummy_user',
       'X-Radiko-Device':'pc'
     }
     return headers
 
   def auth2_headers(self, authToken, partialKey):
     headers = {
-      'X-Radiko-App': 'pc_ts',
-      'X-Radiko-App-Version': '4.0.0',
-      'X-Radiko-User': 'test-stream',
+      # 'X-Radiko-App': 'pc_html5',
+      # 'X-Radiko-App-Version': '0.0.1',
+      'X-Radiko-User': 'dummy_user',
       'X-Radiko-Device': 'pc',
       'X-Radiko-Authtoken': authToken,
       'X-Radiko-Partialkey': partialKey
@@ -172,4 +167,9 @@ def main(event, context):
 
 
 if __name__ == "__main__":
-  main(None, None)
+  try:
+    main(None, None)
+  except urllib.error.HTTPError as e:
+    print('HTTPError: {}, {}'.format(e.code, e.read()))
+  except urllib.error.URLError as e:
+    print('URLError: {}'.format(e.reason))
