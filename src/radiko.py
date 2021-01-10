@@ -43,6 +43,7 @@ RADIKO_CONFIG = [
   {'station_id': 'QRR', 'wd': 0, 'ft': '000000', 'to': '003000', 'name': 'dragalia_lost'},
   {'station_id': 'FMT', 'wd': 4, 'ft': '230000', 'to': '232700', 'name': 'lisa_locks'},
   {'station_id': 'TBS', 'wd': 3, 'ft': '213000', 'to': '220000', 'name': 'd4dj'},
+  {'station_id': 'QRR', 'wd': 0, 'ft': '010000', 'to': '013000', 'name': 'radio-hamamatsucho'},
   {'station_id': 'BAYFM78', 'wd': 5, 'ft': '013000', 'to': '020000', 'name': 'vitamin_m'},
 ]
 
