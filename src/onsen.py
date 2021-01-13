@@ -34,8 +34,8 @@ ONSEN_CONFIG = {
   0: ['miabyss', 'tate', 'hamehura'],
   1: ['teibo', 'tonikawa', 'kimetsu', 'higurashi'],
   2: ['matsui', 'hxeros', 'lasdan'],
-  3: ['ippo', 'yurucamp', 'uzakichan', 'majotabi', 'ff'],
-  4: ['bullet', 'railgun_t', 'koihime'],
+  3: ['ippo', 'yurucamp', 'uzakichan', 'majotabi', 'ff', 'lnaf'],
+  4: ['bullet', 'railgun_t', 'koihime', 'nono', 'back-arrow', 'kakushidungeon'],
   5: ['yujincho', 'gochiusabloom', 'dolls', 'kamisama-day'],
   6: ['survey', 'watahana', 'fujita', 'matsui'],
 }
