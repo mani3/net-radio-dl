@@ -31,13 +31,13 @@ SITE_NAME = 'onsen'
 ONSEN_URL = os.environ.get('ONSEN_URL', '')
 
 ONSEN_CONFIG = {
-  0: ['miabyss', 'tate', 'hamehura'],
-  1: ['teibo', 'tonikawa', 'kimetsu', 'higurashi'],
-  2: ['matsui', 'hxeros', 'lasdan'],
-  3: ['ippo', 'yurucamp', 'uzakichan', 'majotabi', 'ff', 'lnaf'],
+  0: ['hamehura'],
+  1: ['tonikawa', 'kimetsu', 'higurashi'],
+  2: ['matsui', 'lasdan'],
+  3: ['ippo', 'yurucamp', 'majotabi', 'ff', 'lnaf'],
   4: ['bullet', 'railgun_t', 'koihime', 'nono', 'back-arrow', 'kakushidungeon'],
   5: ['yujincho', 'gochiusabloom', 'dolls', 'kamisama-day'],
-  6: ['survey', 'watahana', 'fujita', 'matsui'],
+  6: ['survey', 'fujita', 'matsui'],
 }
 
 
@@ -117,7 +117,7 @@ def main(event, context):
         else:
           logger.info(f'File exist: {key}')
     except Exception as e:
-      logger.error(str(e))
+      logger.error(f'{str(e)}: {program_name}')
 
 
 if __name__ == "__main__":
